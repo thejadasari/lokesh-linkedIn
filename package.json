@@ -1,0 +1,23 @@
+{
+  "name": "linkedin-scrapper",
+  "version": "1.0.0",
+  "description": "LinkedIn Scrapper",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nodejs",
+    "linkedin",
+    "puppeteer"
+  ],
+  "author": "naveen",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1348.0",
+    "express": "^4.18.2",
+    "linkedin-profile-scraper": "^2.3.1",
+    "puppeteer": "^19.3.0"
+  }
+}
