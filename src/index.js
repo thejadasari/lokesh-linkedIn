@@ -478,7 +478,6 @@ class LinkedInProfileScraper {
           // console.log("nodes", buttons1.id);
           // console.log(buttons1.parentElement);
           const rawExperiencesData = yield page.evaluate((nodes) => {
-            debugger;
             const tag = document.getElementById('experience');
             const parentNode = tag.parentElement;
             // last element contains experiences root list
@@ -486,165 +485,72 @@ class LinkedInProfileScraper {
             let data = [];
 
             for (const node of experiences) {
-              const dataWrapper = node.querySelector(
+              let dataWrapper = node.querySelector(
                 ".pvs-entity>div.display-flex>div:first-child>div"
               );
-              const titleElement = dataWrapper.querySelector(
-                "div>span>span:first-child"
+              const dataWithMultipleRoles = node.querySelectorAll(
+                ".pvs-entity:first-child>div.display-flex>div.pvs-list__outer-container>ul.pvs-list>li"
               );
-              const title =
-                (titleElement === null || titleElement === void 0
-                  ? void 0
-                  : titleElement.textContent) || null;
-              const employmentTypeElement = dataWrapper.children[1].children[1];
-              const employmentDetails =
-                (employmentTypeElement === null ||
-                  employmentTypeElement === void 0
-                  ? void 0
-                  : employmentTypeElement.textContent) || null;
-              const employmentType = employmentDetails.split(' · ')[1];
-              // const companyElementClean = employmentType;
-              /*const companyElementClean =
-                companyElement &&
-                (companyElement === null || companyElement === void 0
-                  ? void 0
-                  : companyElement.querySelector("span"))
-                  ? (companyElement === null || companyElement === void 0
-                      ? void 0
-                      : companyElement.removeChild(
-                          companyElement.querySelector("span")
-                        )) && companyElement
-                  : companyElement || null; */
-              const company = employmentDetails.split(' · ')[0];
-              const dateRangeElement = dataWrapper.children[2].children[1];
-              const dateRangeText =
-                (dateRangeElement === null || dateRangeElement === void 0
-                  ? void 0
-                  : dateRangeElement.textContent?.split(' · ')[0]) || null;
-              const startDatePart =
-                (dateRangeText === null || dateRangeText === void 0
-                  ? void 0
-                  : dateRangeText.split("–")[0]) || null;
-              const startDate =
-                (startDatePart === null || startDatePart === void 0
-                  ? void 0
-                  : startDatePart.trim()) || null;
-              const endDatePart =
-                (dateRangeText === null || dateRangeText === void 0
-                  ? void 0
-                  : dateRangeText.split("–")[1]) || null;
-              const endDateIsPresent =
-                (endDatePart === null || endDatePart === void 0
-                  ? void 0
-                  : endDatePart.trim().toLowerCase()) === "present" || false;
-              const endDate =
-                endDatePart && !endDateIsPresent
-                  ? endDatePart.trim()
-                  : "Present";
-              const locationElement = dataWrapper.children[3].children[1];
-              const location =
-                (locationElement === null || locationElement === void 0
-                  ? void 0
-                  : locationElement.textContent) || null;
+              if(!dataWithMultipleRoles.length || !dataWithMultipleRoles[0].querySelector('a.optional-action-target-wrapper') ) {
 
-              const jobSections = dataWrapper.querySelectorAll(
-                "li.pv-entity__position-group-role-item"
-              );
-              jobRoles = [];
+                const titleElement = dataWrapper.querySelector(
+                  "div>span>span:first-child"
+                );
+                const title =
+                  (titleElement === null || titleElement === void 0
+                    ? void 0
+                    : titleElement.textContent) || null;
 
-              console.log(
-                "+++++++++++++++job section type++++++++++++",
-                jobSections
-              );
-              // jobSections.forEach((role) => {
-              //   const roleN = role.querySelector(
-              //     "h3 span:not(.visually-hidden)"
-              //   );
-              //   const jobNewTi =
-              //     (roleN === null || roleN === void 0
-              //       ? void 0
-              //       : roleN.textContent) || null;
-
-              //   const roledescriptionElement = role.querySelector(
-              //     ".pv-entity__description"
-              //   );
-
-              //   const roledescription =
-              //     (roledescriptionElement === null ||
-              //     roledescriptionElement === void 0
-              //       ? void 0
-              //       : roledescriptionElement.textContent) || null;
-
-              //   const roledateRangeElement = role.querySelector(
-              //     ".pv-entity__date-range span:nth-child(2)"
-              //   );
-              //   const roledateRangeText =
-              //     (roledateRangeElement === null ||
-              //     roledateRangeElement === void 0
-              //       ? void 0
-              //       : roledateRangeElement.textContent) || null;
-              //   const rolestartDatePart =
-              //     (roledateRangeText === null || roledateRangeText === void 0
-              //       ? void 0
-              //       : roledateRangeText.split("–")[0]) || null;
-              //   const rolestartDate =
-              //     (rolestartDatePart === null || rolestartDatePart === void 0
-              //       ? void 0
-              //       : rolestartDatePart.trim()) || null;
-              //   const roleendDatePart =
-              //     (roledateRangeText === null || roledateRangeText === void 0
-              //       ? void 0
-              //       : roledateRangeText.split("–")[1]) || null;
-              //   const roleendDateIsPresent =
-              //     (roleendDatePart === null || roleendDatePart === void 0
-              //       ? void 0
-              //       : roleendDatePart.trim().toLowerCase()) === "present" ||
-              //     false;
-              //   const roleendDate =
-              //     roleendDatePart && !roleendDateIsPresent
-              //       ? roleendDatePart.trim()
-              //       : "Present";
-              //   const rolelocationElement = role.querySelector(
-              //     ".pv-entity__location span:nth-child(2)"
-              //   );
-              //   const rolelocation =
-              //     (rolelocationElement === null ||
-              //     rolelocationElement === void 0
-              //       ? void 0
-              //       : rolelocationElement.textContent) || null;
-
-              //   jobRoles.push({
-              //     titles: jobNewTi,
-              //     StartDate: rolestartDate,
-              //     EndDate: roleendDate,
-              //     location: rolelocation,
-              //     description: roledescription,
-              //   });
-              // });
-              // console.log(0);
-              const companyWithRole = dataWrapper.querySelector(
-                ".pv-entity__company-summary-info span:not(.visually-hidden)"
-              );
-              const companyNewName =
-                (companyWithRole === null || companyWithRole === void 0
-                  ? void 0
-                  : companyWithRole.textContent) || null;
-
-              if (jobRoles.length != 0) {
-                jobRoles.map((k) => {
-                  data.push({
-                    title: k.titles,
-                    company: companyNewName,
-                    employmentType,
-                    location: k.location,
-                    startDate: k.StartDate,
-                    endDate: k.EndDate,
-                    endDateIsPresent,
-                    // description: k.description,
-                    // roles: jobRoles
-                  });
-                });
-              } else {
+                const employmentTypeElement = dataWrapper?.children[1]?.children[1];
+                const employmentDetails =
+                  (employmentTypeElement === null ||
+                    employmentTypeElement === void 0
+                    ? void 0
+                    : employmentTypeElement.textContent) || null;
+                const employmentType = employmentDetails.split(' · ')[1];
+    
+                const company = employmentDetails.split(' · ')[0];
+                const dateRangeElement = dataWrapper?.children[2]?.children[1];
+                const dateRangeText =
+                  (dateRangeElement === null || dateRangeElement === void 0
+                    ? void 0
+                    : dateRangeElement.textContent?.split(' · ')[0]) || null;
+                const startDatePart =
+                  (dateRangeText === null || dateRangeText === void 0
+                    ? void 0
+                    : dateRangeText.split("–")[0]) || null;
+                const startDate =
+                  (startDatePart === null || startDatePart === void 0
+                    ? void 0
+                    : startDatePart.trim()) || null;
+                const endDatePart =
+                  (dateRangeText === null || dateRangeText === void 0
+                    ? void 0
+                    : dateRangeText.split("–")[1]) || null;
+                const endDateIsPresent =
+                  (endDatePart === null || endDatePart === void 0
+                    ? void 0
+                    : endDatePart.trim().toLowerCase()) === "present" || false;
+                const endDate =
+                  endDatePart && !endDateIsPresent
+                    ? endDatePart.trim()
+                    : "Present";
+                const locationElement = dataWrapper?.children[3]?.children[1];
+                const location =
+                  (locationElement === null || locationElement === void 0
+                    ? void 0
+                    : locationElement.textContent) || null;
+                const skillsElement = node.querySelector(
+                  "div.pvs-entity>div.display-flex>div.pvs-list__outer-container>ul.pvs-list"
+                );
+                let skills =
+                  (skillsElement === null ||
+                    skillsElement === void 0
+                    ? void 0
+                    : skillsElement.textContent?.split('Skills:')) || [];
+                if(skills[1]){
+                  skills = skills[1].split(' · ')
+                }
                 data.push({
                   title,
                   company,
@@ -654,9 +560,103 @@ class LinkedInProfileScraper {
                   endDate,
                   endDateIsPresent,
                   // description,
+                  roles: [],
+                  skills
+                });
+              } else {
+                dataWrapper = node.querySelector(
+                  ".pvs-entity>div.display-flex>div:first-child>a"
+                );
+                const companyElement = dataWrapper.querySelector(
+                  "div>span>span:first-child"
+                );
+                const company =
+                  (companyElement === null || companyElement === void 0
+                    ? void 0
+                    : companyElement.textContent) || '';
+                
+                const employmentTypeElement = dataWrapper?.children[1]?.children[1];
+                const employmentDetails =
+                  (employmentTypeElement === null ||
+                    employmentTypeElement === void 0
+                    ? void 0
+                    : employmentTypeElement.textContent) || '';
+                const employmentType = employmentDetails.split(' · ')[0];
+                const locationElement = dataWrapper?.children[2]?.children[1];
+                const location =
+                  (locationElement === null || locationElement === void 0
+                    ? void 0
+                    : locationElement.textContent) || null;
+  
+                const jobSections = dataWithMultipleRoles;
+                jobRoles = [];
+  
+                console.log(
+                  "+++++++++++++++job section type++++++++++++",
+                  jobSections
+                );
+                jobSections.forEach((role) => {
+                  const roleWrapper = role.querySelector(
+                    "div.pvs-entity>div.display-flex"
+                  );
+                  const newTitle = roleWrapper.querySelector('div:first-child>a>div>span:first-child>span:first-child')
+                  const jobNewTi =
+                    (newTitle === null || newTitle === void 0
+                      ? void 0
+                      : newTitle.textContent) || null;
+  
+                  const roledateRangeElement = roleWrapper.querySelector('div:first-child>a>span>span:first-child');
+                  const roledateRangeText =
+                    (roledateRangeElement === null ||
+                    roledateRangeElement === void 0
+                      ? void 0
+                      : roledateRangeElement.textContent?.split(' · ')[0]) || null;
+                  const rolestartDatePart =
+                    (roledateRangeText === null || roledateRangeText === void 0
+                      ? void 0
+                      : roledateRangeText.split(" - ")[0]) || null;
+                  const rolestartDate =
+                    (rolestartDatePart === null || rolestartDatePart === void 0
+                      ? void 0
+                      : rolestartDatePart.trim()) || null;
+                  const roleendDatePart =
+                    (roledateRangeText === null || roledateRangeText === void 0
+                      ? void 0
+                      : roledateRangeText.split(" - ")[1]) || null;
+                  const roleendDateIsPresent =
+                    (roleendDatePart === null || roleendDatePart === void 0
+                      ? void 0
+                      : roleendDatePart.trim().toLowerCase()) === "present" ||
+                    false;
+                  const roleendDate =
+                    roleendDatePart && !roleendDateIsPresent
+                      ? roleendDatePart.trim()
+                      : "Present";
+                  const skillsElement = role.querySelector(
+                    "div.pvs-entity>div.display-flex>div.pvs-list__outer-container>ul.pvs-list"
+                  );
+                  let skills =
+                    (skillsElement === null ||
+                      skillsElement === void 0
+                      ? void 0
+                      : skillsElement.textContent?.split('Skills:')) || [];
+                  if(skills[1]){
+                    skills = skills[1].split(' · ')
+                  }
+                  jobRoles.push({
+                    titles: jobNewTi,
+                    StartDate: rolestartDate,
+                    EndDate: roleendDate,
+                    skills
+                  });
+                });
+                data.push({
+                  company,
+                  employmentType,
+                  location,
                   roles: jobRoles,
                 });
-              }
+              } 
             }
             return data;
           }
@@ -918,6 +918,17 @@ class LinkedInProfileScraper {
               "Done. Puppeteer is being kept alive in memory."
             );
             yield page.close();
+          }
+          if(!skills.length) {
+            console.error('===========================Skills missing==============================');
+          }
+          
+          if(!education.length) {
+            console.error('---------------------------Education missing---------------------------');
+          }
+          
+          if(!experiences.length) {
+            console.error('***************************Experience missing**************************');
           }
           return {
             userProfile,

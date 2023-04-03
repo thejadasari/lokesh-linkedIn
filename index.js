@@ -41,8 +41,7 @@ const ScrapProfile = async (profilePath) => {
       keepAlive: true,
     });
     scraper.setBrowser(getBrowser());
-    const result = await scraper.run(`https://www.linkedin.com/${profilePath}`);
-    console.log(result);
+    const result = await scraper.run(profilePath.includes('linkedin.com') ? profilePath : `https://www.linkedin.com/${profilePath}`);
     return result;
   } catch (error) {
     throw error;
